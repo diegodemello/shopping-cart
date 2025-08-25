@@ -27,10 +27,18 @@ const products = [
 
 function renderCartItems(){
     const cartItemsSection = document.getElementById('cart-items');
+    const subTotalElement = document.getElementById('subTotal');
+    const priceTotalElement = document.getElementById('priceTotal');
+    let subTotal = 0;
+
     cartItemsSection.innerHTML = '';
 
     products.forEach(product => {
+        const itemTotal = product.price * product.quantity;
+        subTotal += itemTotal;
+        
         const row = document.createElement('tr');
+
         row.innerHTML = 
         `<td>
                   <div class="product">
@@ -58,6 +66,7 @@ function renderCartItems(){
                     </button>
                   </div>
                 </td>
+                <td>${itemTotal.toFixed(2)}</td>
                 <td>
                     <button class="remove" onclick="removeProduct(${product.id})">
                         <i class="bx bx-x"></i>
@@ -67,6 +76,33 @@ function renderCartItems(){
 
         cartItemsSection.appendChild(row);
     });
+
+    subTotalElement.textContent = `R$ ${subTotal.toFixed(2)}`;
+    priceTotal.textContent = `R$ ${subTotal.toFixed(2)}`;
+}
+
+function increaseQuantity(productId){
+    const product = products.find(x => x.id == productId);
+    if(product){
+        product.quantity++;
+        renderCartItems();
+    }
+}
+
+function decreaseQuantity(productId){
+    const product = products.find(x => x.id == productId);
+    if (product && product.quantity > 1){
+        product.quantity--;
+        renderCartItems();
+    }
+}
+
+function removeProduct(productId){
+    const index = products.findIndex(x => x.id == productId);
+    if(index !== -1 && confirm(`Você realmente deseja excluir ${products[index].name} do seu carrinho?`)){
+        products.splice(index, 1);
+        renderCartItems();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', renderCartItems);
