@@ -25,6 +25,19 @@ const products = [
     }
 ];
 
+const coupons = [
+    {
+        title: 'DESCONTO15',
+        discount: 0.15,
+    },
+    {
+        title: 'BLACKWEEK',
+        discount: 0.4,
+    }
+];
+
+var price = 0;
+
 function renderCartItems(){
     const cartItemsSection = document.getElementById('cart-items');
     const subTotalElement = document.getElementById('subTotal');
@@ -79,6 +92,7 @@ function renderCartItems(){
 
     subTotalElement.textContent = `R$ ${subTotal.toFixed(2)}`;
     priceTotal.textContent = `R$ ${subTotal.toFixed(2)}`;
+    price = subTotal;
 }
 
 function increaseQuantity(productId){
@@ -105,5 +119,25 @@ function removeProduct(productId){
     }
 }
 
-document.addEventListener('DOMContentLoaded', renderCartItems);
+function addDiscount(){
+    const discountDiv = document.getElementById('discountDiv');
+    discountDiv.innerHTML = '';
 
+    const discountForm = document.createElement('div');
+    discountForm.innerHTML = `
+            <input type="text" id="discountInput">
+            <button type="submit" onclick="applyCoupon()">Aplicar Cupom</button>
+        `;
+    discountDiv.appendChild(discountForm);
+}
+
+function applyCoupon(){
+    const inputValue = document.getElementById('discountInput').value;
+    if(inputValue){
+        const coupon = coupons.find(coupon => coupon.title == inputValue);
+        const discount = price - (price * coupon.discount);
+        priceTotal.textContent = `R$ ${discount.toFixed(2)}`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', renderCartItems);
